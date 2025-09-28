@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>InvestorOS — Premium Landing</title>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- tsParticles for animated background -->
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles@2/tsparticles.min.js"></script>
+  <!-- AOS for scroll animations -->
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+  <script defer src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+
+  <style>
+    :root{
+      --bg:#0b0f14;
+      --card: rgba(255,255,255,0.04);
+      --accent:#00d4bf;
+      --accent-2:#ffb86b;
+      --glass: rgba(255,255,255,0.03);
+      --muted:#9aa4b2;
+      --glass-border: rgba(255,255,255,0.06);
+      --maxw:1200px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+      background:linear-gradient(180deg,#071018 0%, #0b0f14 70%);
+      color:#e6eef6;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    /* NAV */
+    .nav {
+      position:fixed; left:0; right:0; top:0; z-index:40;
+      height:72px; display:flex; align-items:center; justify-content:space-between;
+      padding:0 28px; gap:16px;
+      background: linear-gradient(180deg, rgba(6,10,14,0.5), rgba(6,10,14,0.25));
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+      backdrop-filter: blur(6px);
+    }
+    .brand { display:flex; align-items:center; gap:12px; }
+    .logo {
+      width:44px; height:44px; border-radius:10px;
+      background:linear-gradient(135deg,var(--accent),#7c5ce2);
+      display:flex;align-items:center;justify-content:center;font-weight:700;color:#021014;
+      box-shadow:0 6px 20px rgba(0,0,0,0.6);
+      font-family: "Segoe UI", Roboto, sans-serif;
+    }
+    .brand h1{font-size:18px;margin:0;color:#fff}
+    .nav-links{display:flex;gap:18px;align-items:center}
+    .nav-links a{color:var(--muted);text-decoration:none;font-weight:600}
+    .nav-links a:hover{color:var(--accent)}
+
+    /* HERO */
+    header.hero {
+      position:relative; height:90vh; min-height:640px; display:flex;align-items:center;justify-content:center;
+      padding:0 24px; text-align:center; overflow:hidden;
+    }
+    /* background video */
+    header.hero video.bgvid {
+      position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0; filter:brightness(0.45) saturate(1.05);
+    }
+    /* particles overlay */
+    #tsparticles{ position:absolute; inset:0; z-index:1; pointer-events:none; }
+
+    .hero-inner { position:relative; z-index:5; max-width:var(--maxw); margin:auto; padding:40px; }
+    .eyebrow { color:var(--accent); font-weight:700; letter-spacing:0.6px; margin-bottom:18px; display:inline-block; }
+    .hero h2 { font-size:clamp(34px,6vw,56px); margin:0 0 18px 0; line-height:1; color:#fff; }
+    .hero p { color:var(--muted); font-size:18px; margin-bottom:26px; max-width:820px; margin-left:auto;margin-right:auto; }
+    .cta-row { display:flex; gap:14px; justify-content:center; flex-wrap:wrap }
+    .btn-primary, .btn-ghost {
+      padding:12px 22px; border-radius:10px; font-weight:700; border:none; cursor:pointer;
+    }
+    .btn-primary { background:linear-gradient(90deg,var(--accent),#8a2be2); color:#021014; box-shadow:0 10px 30px rgba(10,200,180,0.12); }
+    .btn-ghost { background:transparent; color:var(--muted); border:1px solid rgba(255,255,255,0.06) }
+
+    /* MAIN LAYOUT */
+    main { position:relative; z-index:10; margin-top:24px; }
+
+    .section { padding:72px 24px; max-width:var(--maxw); margin:0 auto; }
+
+    /* FEATURES */
+    .features { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:18px; margin-top:18px; }
+    .feature {
+      background:var(--card); border:1px solid var(--glass-border); border-radius:12px; padding:18px;
+      box-shadow: 0 6px 20px rgba(2,6,10,0.5);
+      display:flex; gap:12px; align-items:flex-start;
+    }
+    .feature .icon {
+      width:46px; height:46px; border-radius:10px; display:grid; place-items:center;
+      background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02)); color:var(--accent);
+      font-weight:800;
+    }
+    .feature h4{margin:0 0 6px 0}
+    .feature p{margin:0;color:var(--muted);font-size:14px}
+
+    /* MARKET TABLE */
+    .market-card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:14px; padding:12px; border:1px solid rgba(255,255,255,0.04)
+    }
+    table.market {
+      width:100%; border-collapse:collapse; font-size:14px;
+    }
+    table.market thead th { text-align:left; padding:12px 14px; color:var(--muted); font-weight:700; background:transparent; }
+    table.market tbody td { padding:12px 14px; vertical-align:middle; border-top:1px solid rgba(255,255,255,0.02) }
+    .index-name { display:flex; gap:10px; align-items:center; font-weight:700 }
+    .flag { width:20px; height:14px; border-radius:3px; object-fit:cover; box-shadow:0 2px 6px rgba(0,0,0,0.5) }
+
+    .spark-canvas { width:120px; height:34px; display:inline-block; vertical-align:middle }
+
+    .price { font-weight:700 }
+    .muted { color:var(--muted); font-size:13px }
+
+    /* PORTFOLIO CARDS */
+    .portfolio-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:18px }
+    .p-card { background:var(--card); padding:16px; border-radius:12px; border:1px solid var(--glass-border); }
+
+    /* NEWS grid */
+    .news-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px }
+
+    /* testimonial carousel (simple) */
+    .testimonials { display:flex; gap:12px; overflow:hidden; scroll-snap-type:x mandatory; padding-bottom:10px }
+    .testimonial { min-width:280px; background:var(--card); border-radius:12px; padding:16px; border:1px solid var(--glass-border); scroll-snap-align:center }
+
+    /* newsletter/register */
+    .inline-form { display:flex; gap:10px; justify-content:center; align-items:center; flex-wrap:wrap }
+    .inline-form input { padding:12px 14px; border-radius:8px; border:none; background:rgba(255,255,255,0.03); color:inherit; min-width:240px }
+    .inline-form button { padding:12px 18px; border-radius:8px; background:var(--accent); border:none; color:#021014; font-weight:700; cursor:pointer }
+
+    /* footer */
+    footer{ padding:48px 24px; text-align:center; color:var(--muted); border-top:1px solid rgba(255,255,255,0.02) }
+
+    /* responsive */
+    @media (max-width:900px){
+      .nav{padding:0 16px}
+      .hero-inner{padding:14px}
+      .nav-links{display:none}
+    }
+  </style>
+</head>
+<body>
+  <!-- NAV -->
+  <div class="nav" role="navigation" aria-label="Main Navigation">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">OS</div>
+      <div>
+        <div style="font-size:13px;color:var(--muted)">Investor</div>
+        <div style="font-weight:700">InvestorOS</div>
+      </div>
+    </div>
+    <div class="nav-links" aria-hidden="true">
+      <a href="#features">Features</a>
+      <a href="#market">Markets</a>
+      <a href="#portfolio">Portfolio</a>
+      <a href="#register">Get Started</a>
+    </div>
+  </div>
+
+  <!-- HERO with video + particles -->
+  <header class="hero" role="banner">
+    <!-- background video (reliable CDN) -->
+    <video class="bgvid" autoplay muted loop playsinline poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1600' height='900'%3E%3Crect width='100%25' height='100%25' fill='%230b0f14'/%3E%3C/svg%3E">
+      <source src="https://cdn.coverr.co/videos/coverr-aerial-view-of-financial-district-1080p.mp4" type="video/mp4">
+      <!-- fallback: particle canvas will show -->
+    </video>
+
+    <!-- tsParticles container -->
+    <div id="tsparticles" aria-hidden="true"></div>
+
+    <div class="hero-inner" data-aos="zoom-in">
+      <div class="eyebrow">InvestorOS Beta • For investors</div>
+      <h2>All-in-one workspace for modern investors</h2>
+      <p>Morning Brief, Pipeline, Diligence, Portfolio and Network — a single place to run your investment process faster and cleaner.</p>
+      <div class="cta-row">
+        <button class="btn-primary" onclick="document.getElementById('register').scrollIntoView({behavior:'smooth'})">Join Beta — Get Early Access</button>
+        <button class="btn-ghost" onclick="document.getElementById('market').scrollIntoView({behavior:'smooth'})">See Markets</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- FEATURES -->
+    <section id="features" class="section" aria-labelledby="features-heading">
+      <h2 id="features-heading">Key Features</h2>
+      <div class="features" role="list">
+        <div class="feature" data-aos="fade-up"><div class="icon">☀️</div><div><h4>Morning Brief</h4><p class="muted">Start your day with top priorities and alerts.</p></div></div>
+        <div class="feature" data-aos="fade-up" data-aos-delay="80"><div class="icon">🧭</div><div><h4>Pipeline</h4><p class="muted">Drag & drop deals across stages.</p></div></div>
+        <div class="feature" data-aos="fade-up" data-aos-delay="160"><div class="icon">📝</div><div><h4>Diligence</h4><p class="muted">Keep notes, links and export professional memos.</p></div></div>
+        <div class="feature" data-aos="fade-up" data-aos-delay="240"><div class="icon">📊</div><div><h4>Portfolio</h4><p class="muted">Track company metrics and returns.</p></div></div>
+        <div class="feature" data-aos="fade-up" data-aos-delay="320"><div class="icon">🔗</div><div><h4>Network</h4><p class="muted">Visualize relationships between people.</p></div></div>
+        <div class="feature" data-aos="fade-up" data-aos-delay="400"><div class="icon">🔎</div><div><h4>Search</h4><p class="muted">Find deals, people and notes instantly.</p></div></div>
+      </div>
+    </section>
+
+    <!-- MARKET -->
+ <!-- MARKET -->
+<section id="market" class="section" aria-labelledby="market-heading">
+  <h2 id="market-heading" style="text-align:center;margin-bottom:24px">Market Indices</h2>
+  <div style="display:flex;justify-content:center">
+    <div class="market-card" data-aos="fade-up" style="max-width:900px;width:100%">
+      <table class="market" role="table" aria-label="Market indices">
+        <thead>
+          <tr><th>Index</th><th>Price</th><th>Change</th><th>%</th><th>Trend</th></tr>
+        </thead>
+        <tbody id="market-data">
+          <!-- populated by JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+
+    <!-- PORTFOLIO -->
+    <section id="portfolio" class="section" aria-labelledby="portfolio-heading">
+      <h2 id="portfolio-heading">Portfolio Preview</h2>
+      <div class="portfolio-grid" data-aos="fade-right">
+        <div class="p-card">
+          <h4>Aiva AI</h4>
+          <p class="muted">Seed round • SaaS • Fintech</p>
+          <div style="display:flex;justify-content:space-between;margin-top:12px"><strong>$120,000</strong><span class="positive">+12%</span></div>
+        </div>
+        <div class="p-card">
+          <h4>GreenCart</h4>
+          <p class="muted">Series A • Marketplaces</p>
+          <div style="display:flex;justify-content:space-between;margin-top:12px"><strong>$45,000</strong><span class="negative">-4%</span></div>
+        </div>
+        <div class="p-card">
+          <h4>BioHealth</h4>
+          <p class="muted">Growth • Healthcare</p>
+          <div style="display:flex;justify-content:space-between;margin-top:12px"><strong>$90,000</strong><span class="positive">+8%</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NEWS -->
+    <section id="news" class="section">
+      <h2>Latest News</h2>
+      <div class="news-grid" data-aos="fade-left">
+        <article class="card"><h4>Markets Rally on Tech</h4><p class="muted">Tech stocks lead gains after strong earnings reports.</p></article>
+        <article class="card"><h4>Oil Prices Ease</h4><p class="muted">Oil slips on weak demand signals from key regions.</p></article>
+        <article class="card"><h4>Crypto Gains Momentum</h4><p class="muted">Bitcoin and Ethereum show signs of recovery.</p></article>
+      </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section class="section">
+      <h2>Trusted by Investors</h2>
+      <div class="testimonials" data-aos="fade-up" aria-hidden="false">
+        <div class="testimonial"><strong>Alpha VC</strong><p class="muted">“InvestorOS simplified our workflow and improved deal flow.”</p></div>
+        <div class="testimonial"><strong>Beta Fund</strong><p class="muted">“Fast, clear and trustworthy — must-have for our partners.”</p></div>
+        <div class="testimonial"><strong>Gamma Angels</strong><p class="muted">“We moved from spreadsheets to InvestorOS in days.”</p></div>
+      </div>
+    </section>
+
+    <!-- NEWSLETTER + REGISTER -->
+    <section class="section">
+      <div style="display:flex;gap:28px;align-items:center;flex-wrap:wrap">
+        <div style="flex:1" data-aos="zoom-in">
+          <h3 style="margin-top:0">Get market updates</h3>
+          <p class="muted">Subscribe to our weekly newsletter with curated deal lists and market insights.</p>
+          <div class="inline-form" role="form" aria-label="Subscribe">
+            <input id="newsletter-email" type="email" placeholder="you@company.com" aria-label="email">
+            <button id="subscribe-btn">Subscribe</button>
+          </div>
+        </div>
+
+        <div style="flex:1" data-aos="zoom-in">
+          <h3 style="margin-top:0">Create account</h3>
+          <form id="signup" class="register-form" aria-label="Sign up form">
+            <input id="full-name" type="text" placeholder="Full name" required>
+            <input id="email" type="email" placeholder="Email address" required>
+            <input id="pwd" type="password" placeholder="Create password" required>
+            <button type="submit" ><a href="./daadadadada.html">Create Accaunt</a></button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    &copy; 2025 InvestorOS • Built with care • Privacy · Terms
+  </footer>
+
+  <!-- SCRIPT: particles, market data, charts, interactions -->
+  <script>
+    // Initialize AOS
+    document.addEventListener('DOMContentLoaded', function(){ AOS.init({ once:true, duration:700 }); });
+
+    // tsParticles config (subtle, premium)
+    tsParticles.load("tsparticles", {
+      fpsLimit: 60,
+      particles: {
+        number: { value: 65, density: { enable:true, area:800 } },
+        color: { value: ["#00d4bf","#8a2be2","#4cafef"] },
+        shape: { type: "circle" },
+        opacity: { value: 0.06, random: false },
+        size: { value: { min: 1, max: 3 } },
+        move: { enable:true, speed:0.4, direction:"none", outMode:"out" },
+        links: { enable: true, distance:120, color:"#2b2f3a", opacity: 0.04, width:1 }
+      },
+      interactivity: {
+        events: { onHover:{ enable:true, mode:"repulse" }, onClick:{ enable:false } },
+        modes: { repulse: { distance:80 } }
+      },
+      detectRetina: true
+    });
+
+    // Demo market data with sparkline arrays
+    const demoData = [
+      { name:"Dow Jones", price:46247.29, change:299.97, pct:0.65, trend:[46200,46250,46180,46280,46247] },
+      { name:"S&P 500", price:6643.70, change:38.98, pct:0.59, trend:[6600,6620,6635,6640,6643] },
+      { name:"Nasdaq", price:22484.07, change:99.37, pct:0.44, trend:[22380,22400,22420,22400,22484] },
+      { name:"FTSE 100", price:8200.52, change:-15.21, pct:-0.19, trend:[8220,8215,8210,8208,8200] },
+      { name:"DAX", price:15423.12, change:84.50, pct:0.55, trend:[15300,15340,15380,15390,15423] },
+      { name:"Nikkei 225", price:33200.98, change:122.76, pct:0.37, trend:[33000,33050,33100,33180,33200] },
+      { name:"Shanghai", price:3120.34, change:-22.65, pct:-0.72, trend:[3150,3140,3130,3125,3120] },
+      { name:"Hang Seng", price:17480.65, change:65.88, pct:0.38, trend:[17400,17420,17450,17470,17480] },
+      { name:"BTC-USD", price:60200.10, change:500.65, pct:0.84, trend:[59800,60000,59950,60100,60200] },
+      { name:"ETH-USD", price:3400.80, change:-50.12, pct:-1.45, trend:[3500,3480,3450,3430,3400] },
+      { name:"Sensex", price:65723.50, change:256.10, pct:0.39, trend:[65300,65450,65600,65670,65723] }
+    ];
+
+    // Render market table with mini sparkline canvases
+    function renderMarket(){
+      const tbody = document.getElementById('market-data');
+      tbody.innerHTML = '';
+      demoData.forEach((row, idx) => {
+        const tr = document.createElement('tr');
+        const pctClass = row.pct >= 0 ? 'positive' : 'negative';
+        const changeClass = row.change >= 0 ? 'positive' : 'negative';
+
+        // create sparkline canvas id unique
+        const canvasId = 'spark-' + idx;
+        tr.innerHTML = `
+          <td class="index-name"><img class="flag" src="${getFlag(row.name)}" alt="" /><span>${row.name}</span></td>
+          <td class="price">$${formatNumber(row.price)}</td>
+          <td class="${changeClass}">${row.change.toFixed(2)}</td>
+          <td class="${pctClass}">${row.pct.toFixed(2)}%</td>
+          <td><canvas id="${canvasId}" class="spark-canvas" aria-hidden="true"></canvas></td>
+        `;
+        tbody.appendChild(tr);
+
+        // tiny delay to ensure canvas is in DOM
+        setTimeout(()=>createSparkline(canvasId, row.trend, changeClass), 20);
+      });
+    }
+
+    // helper: format
+    function formatNumber(v){ return v.toLocaleString(undefined, {maximumFractionDigits:2}) }
+
+    // get small flag by name (simple mapping to emoji as fallback)
+    function getFlag(name){
+      const map = {
+        "Dow Jones":"https://flagcdn.com/us.svg",
+        "S&P 500":"https://flagcdn.com/us.svg",
+        "Nasdaq":"https://flagcdn.com/us.svg",
+        "FTSE 100":"https://flagcdn.com/gb.svg",
+        "DAX":"https://flagcdn.com/de.svg",
+        "Nikkei 225":"https://flagcdn.com/jp.svg",
+        "Shanghai":"https://flagcdn.com/cn.svg",
+        "Hang Seng":"https://flagcdn.com/hk.svg",
+        "BTC-USD":"https://s2.coinmarketcap.com/static/img/coins/64x64/1.png",
+        "ETH-USD":"https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png",
+        "Sensex":"https://flagcdn.com/in.svg"
+      };
+      return map[name] || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="20" height="14"%3E%3Crect width="100%25" height="100%25" fill="%234cafef"/%3E%3C/svg%3E';
+    }
+
+    // create sparkline chart
+    function createSparkline(id, data, changeClass){
+      const ctx = document.getElementById(id);
+      if(!ctx) return;
+      new Chart(ctx, {
+        type:'line',
+        data:{ labels: data.map((_,i)=>i), datasets:[{ data: data, borderColor: changeClass==='positive'?'#3fb950':'#f85149', backgroundColor:'transparent', borderWidth:2, pointRadius:0, tension:0.3 }] },
+        options:{
+          responsive:true,
+          maintainAspectRatio:false,
+          interaction:{mode:'index', intersect:false},
+          plugins:{legend:{display:false}, tooltip:{enabled:false}},
+          scales:{ x:{ display:false }, y:{ display:false } }
+        }
+      });
+    }
+
+    // subscribe & signup interactions (local only)
+    document.getElementById('subscribe-btn').addEventListener('click', ()=>{
+      const email = document.getElementById('newsletter-email').value || 'you@company.com';
+      alert(`Thanks — subscribed: ${email}`);
+    });
+
+    document.getElementById('signup').addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const name = document.getElementById('full-name').value || 'Investor';
+      alert(`Welcome aboard, ${name}! (demo account created)`);
+      e.target.reset();
+    });
+
+    // initial render
+    document.addEventListener('DOMContentLoaded', renderMarket);
+  </script>
+</body>
+</html>

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="uz">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>InfiniteX MVP - Sotuvlar Kuzatuvi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Inter", sans-serif;
+      }
+      body {
+        background-color: #0f172a; /* Pitch deck foniga o'xshash */
+        color: #e2e8f0;
+        padding: 30px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+      }
+      .container {
+        background-color: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 30px;
+        width: 100%;
+        max-width: 800px;
+        margin-bottom: 30px;
+      }
+      h1,
+      h2 {
+        color: #fff;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+      h1 .gradient-text {
+        background: linear-gradient(90deg, #06b6d4, #2563eb);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .form-group {
+        margin-bottom: 15px;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-size: 14px;
+        color: #94a3b8;
+      }
+      input[type="text"],
+      input[type="number"],
+      input[type="date"] {
+        width: 100%;
+        padding: 10px 12px;
+        background-color: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        color: #e2e8f0;
+        font-size: 16px;
+      }
+      input[type="text"]:focus,
+      input[type="number"]:focus,
+      input[type="date"]:focus {
+        outline: none;
+        border-color: #06b6d4;
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+      button {
+        background: linear-gradient(90deg, #06b6d4, #2563eb);
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+        margin-top: 10px;
+      }
+      button:hover {
+        opacity: 0.9;
+        box-shadow: 0 5px 15px rgba(6, 182, 212, 0.3);
+      }
+      #salesList {
+        margin-top: 30px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-top: 20px;
+      }
+      .sale-item {
+        background-color: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .sale-item span {
+        font-size: 15px;
+      }
+      .sale-item .amount {
+        font-weight: 600;
+        color: #67e8f9; /* Cyan rang */
+      }
+      .sale-item .date {
+        font-size: 12px;
+        color: #94a3b8;
+        margin-left: 15px;
+      }
+      #totalSales {
+        margin-top: 25px;
+        text-align: right;
+        font-size: 1.5em;
+        font-weight: bold;
+        color: #fff;
+      }
+      #totalSales .gradient-text {
+        background: linear-gradient(90deg, #06b6d4, #2563eb);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      /* Login/Auth Mockup (Very Simple) */
+      #authContainer,
+      #appContainer {
+        width: 100%;
+        max-width: 400px; /* Login form usually narrower */
+      }
+      #appContainer {
+        display: none;
+        max-width: 800px;
+      } /* Hide app initially */
+      .auth-switch {
+        text-align: center;
+        margin-top: 15px;
+        font-size: 14px;
+      }
+      .auth-switch a {
+        color: #06b6d4;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      .auth-switch a:hover {
+        text-decoration: underline;
+      }
+      #registerForm {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Simple Login/Register Mockup -->
+    <div id="authContainer" class="container">
+      <h1 id="authTitle">Kirish</h1>
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="loginEmail">Email</label>
+          <input type="text" id="loginEmail" placeholder="test@example.com" />
+        </div>
+        <div class="form-group">
+          <label for="loginPassword">Parol</label>
+          <input type="text" id="loginPassword" placeholder="******" />
+        </div>
+        <button type="button" id="loginButton">Kirish</button>
+        <div class="auth-switch">
+          Akkauntingiz yo'qmi? <a id="showRegister">Ro'yxatdan o'tish</a>
+        </div>
+      </form>
+      <form id="registerForm">
+        <div class="form-group">
+          <label for="registerName">Ism</label>
+          <input type="text" id="registerName" placeholder="Ali Valiyev" />
+        </div>
+        <div class="form-group">
+          <label for="registerEmail">Email</label>
+          <input type="text" id="registerEmail" placeholder="siz@example.com" />
+        </div>
+        <div class="form-group">
+          <label for="registerPassword">Parol</label>
+          <input type="text" id="registerPassword" placeholder="******" />
+        </div>
+        <button type="button" id="registerButton">Ro'yxatdan o'tish</button>
+        <div class="auth-switch">
+          Akkauntingiz bormi? <a id="showLogin">Kirish</a>
+        </div>
+      </form>
+    </div>
+
+    <!-- Main App Content (Hidden Initially) -->
+    <div id="appContainer" style="display: none">
+      <h1><span class="gradient-text">InfiniteX</span> MVP</h1>
+
+      <div class="container">
+        <h2>Yangi Sotuv Qo'shish</h2>
+        <form id="addSaleForm">
+          <div class="form-group">
+            <label for="productName">Mahsulot/Xizmat Nomi</label>
+            <input
+              type="text"
+              id="productName"
+              required
+              placeholder="Masalan, Veb-sayt yaratish"
+            />
+          </div>
+          <div class="form-group">
+            <label for="saleAmount">Summa (so'm)</label>
+            <input
+              type="number"
+              id="saleAmount"
+              required
+              placeholder="5000000"
+            />
+          </div>
+          <div class="form-group">
+            <label for="saleDate">Sana</label>
+            <input type="date" id="saleDate" required />
+          </div>
+          <button type="submit">Sotuvni Qo'shish</button>
+        </form>
+      </div>
+
+      <div class="container">
+        <h2>Sotuvlar Ro'yxati</h2>
+        <div id="salesList">
+          <!-- Sotuvlar shu yerga JavaScript orqali qo'shiladi -->
+          <p style="text-align: center; color: #94a3b8">
+            Hozircha sotuvlar mavjud emas.
+          </p>
+        </div>
+        <div id="totalSales">
+          Umumiy Sotuvlar: <span class="gradient-text">0 so'm</span>
+        </div>
+      </div>
+      <button
+        id="logoutButton"
+        style="max-width: 200px; margin: 20px auto 0; background: #dc2626"
+      >
+        Chiqish
+      </button>
+    </div>
+
+    <script>
+      // --- Simple In-Memory Data Store (NO DATABASE!) ---
+      let salesData = []; // Barcha sotuvlar shu yerda vaqtincha saqlanadi
+      let loggedIn = false; // Foydalanuvchi kirganmi?
+
+      // --- DOM Element References ---
+      const authContainer = document.getElementById("authContainer");
+      const appContainer = document.getElementById("appContainer");
+      const loginForm = document.getElementById("loginForm");
+      const registerForm = document.getElementById("registerForm");
+      const loginButton = document.getElementById("loginButton");
+      const registerButton = document.getElementById("registerButton");
+      const showRegisterLink = document.getElementById("showRegister");
+      const showLoginLink = document.getElementById("showLogin");
+      const authTitle = document.getElementById("authTitle");
+      const logoutButton = document.getElementById("logoutButton");
+
+      const addSaleForm = document.getElementById("addSaleForm");
+      const productNameInput = document.getElementById("productName");
+      const saleAmountInput = document.getElementById("saleAmount");
+      const saleDateInput = document.getElementById("saleDate");
+      const salesListDiv = document.getElementById("salesList");
+      const totalSalesDiv = document.getElementById("totalSales");
+
+      // --- Functions ---
+
+      // Switch between Login and Register Views
+      function showLoginView() {
+        loginForm.style.display = "block";
+        registerForm.style.display = "none";
+        authTitle.textContent = "Kirish";
+      }
+      function showRegisterView() {
+        loginForm.style.display = "none";
+        registerForm.style.display = "block";
+        authTitle.textContent = "Ro'yxatdan o'tish";
+      }
+
+      // Simulate Login/Register (VERY basic)
+      function handleLogin() {
+        // Haqiqiy tekshiruv yo'q!
+        loggedIn = true;
+        authContainer.style.display = "none";
+        appContainer.style.display = "block";
+        renderSales(); // Render initial sales (empty)
+      }
+
+      function handleRegister() {
+        // Haqiqiy ro'yxatdan o'tish yo'q!
+        alert("Muvaffaqiyatli ro'yxatdan o'tdingiz! Endi kiring.");
+        showLoginView(); // Show login form after fake registration
+      }
+
+      function handleLogout() {
+        loggedIn = false;
+        authContainer.style.display = "block";
+        appContainer.style.display = "none";
+        showLoginView(); // Back to login screen
+        // Clear data (optional, as it's in memory anyway)
+        // salesData = [];
+        // renderSales();
+      }
+
+      // Format number as currency (Uzbek Som)
+      function formatCurrency(amount) {
+        return new Intl.NumberFormat("uz-UZ", {
+          style: "currency",
+          currency: "UZS",
+          minimumFractionDigits: 0,
+        }).format(amount);
+      }
+
+      // Render the list of sales to the page
+      function renderSales() {
+        if (!loggedIn) return; // Only render if logged in
+
+        salesListDiv.innerHTML = ""; // Oldingi ro'yxatni tozalash
+
+        if (salesData.length === 0) {
+          salesListDiv.innerHTML =
+            '<p style="text-align: center; color: #94a3b8;">Hozircha sotuvlar mavjud emas.</p>';
+        } else {
+          // Yangilarni boshida ko'rsatish uchun reverse()
+          salesData
+            .slice()
+            .reverse()
+            .forEach((sale) => {
+              const saleDiv = document.createElement("div");
+              saleDiv.classList.add("sale-item");
+
+              const detailsSpan = document.createElement("span");
+              detailsSpan.textContent = sale.product;
+
+              const amountDateDiv = document.createElement("div");
+
+              const amountSpan = document.createElement("span");
+              amountSpan.classList.add("amount");
+              amountSpan.textContent = formatCurrency(sale.amount);
+
+              const dateSpan = document.createElement("span");
+              dateSpan.classList.add("date");
+              dateSpan.textContent = `(${sale.date})`; // Sanani qo'shish
+
+              amountDateDiv.appendChild(amountSpan);
+              amountDateDiv.appendChild(dateSpan);
+
+              saleDiv.appendChild(detailsSpan);
+              saleDiv.appendChild(amountDateDiv);
+              salesListDiv.appendChild(saleDiv);
+            });
+        }
+
+        // Calculate and render total sales
+        const totalAmount = salesData.reduce(
+          (sum, sale) => sum + sale.amount,
+          0
+        );
+        totalSalesDiv.innerHTML = `Umumiy Sotuvlar: <span class="gradient-text">${formatCurrency(
+          totalAmount
+        )}</span>`;
+      }
+
+      // Handle form submission
+      function handleAddSale(event) {
+        event.preventDefault(); // Formani qayta yuklashini to'xtatish
+
+        if (!loggedIn) {
+          alert("Iltimos, avval tizimga kiring.");
+          return;
+        }
+
+        const productName = productNameInput.value.trim();
+        const saleAmount = parseFloat(saleAmountInput.value);
+        const saleDate = saleDateInput.value; // Get date value
+
+        if (productName && !isNaN(saleAmount) && saleAmount > 0 && saleDate) {
+          const newSale = {
+            id: Date.now(), // Unique ID (simple way for demo)
+            product: productName,
+            amount: saleAmount,
+            date: saleDate, // Store the date
+          };
+
+          salesData.push(newSale); // Yangi sotuvni massivga qo'shish
+          renderSales(); // Ro'yxatni yangilash
+
+          // Formani tozalash
+          addSaleForm.reset();
+          // Sanani bugungi kunga o'rnatish (ixtiyoriy)
+          // saleDateInput.valueAsDate = new Date();
+        } else {
+          alert("Iltimos, barcha maydonlarni to'g'ri to'ldiring.");
+        }
+      }
+
+      // --- Event Listeners ---
+      showRegisterLink.addEventListener("click", showRegisterView);
+      showLoginLink.addEventListener("click", showLoginView);
+      loginButton.addEventListener("click", handleLogin);
+      registerButton.addEventListener("click", handleRegister);
+      logoutButton.addEventListener("click", handleLogout);
+
+      addSaleForm.addEventListener("submit", handleAddSale);
+
+      // --- Initial Setup ---
+      // Set default date to today
+      saleDateInput.valueAsDate = new Date();
+
+      // Check login state on load (for demo purpose, always start logged out)
+      handleLogout(); // Ensure starting state is logged out
+
+      // renderSales(); // Render initial list (if any data existed, which it doesn't)
+    </script>
+  </body>
+</html>

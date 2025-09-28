@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InfiniteX MVP - Biznes Asoslari & Topshiriqlar</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: #0f172a; color: #e2e8f0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        .container { background-color: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 25px; width: 100%; max-width: 1000px; /* Kengaytirilgan konteyner */ margin-bottom: 25px; }
+        h1, h2, h3 { color: #fff; margin-bottom: 20px; text-align: center; }
+        h1 .gradient-text { background: linear-gradient(90deg, #06b6d4, #2563eb); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-size: 14px; color: #94a3b8; }
+        input[type="text"], input[type="number"], input[type="date"], input[type="email"], input[type="tel"], select, textarea {
+            width: 100%; padding: 10px 12px; background-color: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px; color: #e2e8f0; font-size: 16px;
+        }
+        textarea { min-height: 80px; resize: vertical; }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: #06b6d4; background-color: rgba(255, 255, 255, 0.1); }
+        button { background: linear-gradient(90deg, #06b6d4, #2563eb); color: white; border: none; padding: 12px 20px; border-radius: 8px; font-size: 16px; cursor: pointer; transition: all 0.3s ease; width: 100%; margin-top: 10px; }
+        button:hover { opacity: 0.9; box-shadow: 0 5px 15px rgba(6, 182, 212, 0.3); }
+        .list-container { margin-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 15px; }
+        .item { background-color: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+        .item span { font-size: 15px; }
+        .item .amount { font-weight: 600; }
+        .sale .amount { color: #67e8f9; }
+        .expense .amount { color: #f87171; }
+        .item .date, .item .customer-info, .item .details { font-size: 13px; color: #94a3b8; margin-left: 10px; }
+        .totals { margin-top: 20px; text-align: right; font-size: 1.2em; font-weight: bold; color: #fff; }
+        .totals .gradient-text { background: linear-gradient(90deg, #06b6d4, #2563eb); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .profit .amount { color: #34d399; }
+        .loss .amount { color: #f87171; }
+
+        #authContainer, #appContainer { width: 100%; }
+        #appContainer { display: none; }
+        #authContainer { max-width: 400px; }
+        .auth-switch { text-align: center; margin-top: 15px; font-size: 14px; }
+        .auth-switch a { color: #06b6d4; text-decoration: none; cursor: pointer; }
+        .auth-switch a:hover { text-decoration: underline; }
+        #registerForm { display: none; }
+        .tabs { display: flex; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); overflow-x: auto; /* Mobil uchun */ }
+        .tab-button { padding: 10px 15px; cursor: pointer; color: #94a3b8; border: none; background: none; font-size: 16px; white-space: nowrap; /* Mobil uchun */ }
+        .tab-button.active { color: #06b6d4; border-bottom: 2px solid #06b6d4; font-weight: 600;}
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .grid-container { display: grid; grid-template-columns: 1fr; gap: 20px; }
+        @media (min-width: 768px) { .grid-container { grid-template-columns: 1fr 1fr; } }
+
+        /* Topshiriqlar Moduli Stili */
+        .tasks-board { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 10px; /* Scrollbar uchun joy */ }
+        .task-column { background-color: rgba(255, 255, 255, 0.03); border-radius: 8px; padding: 15px; min-width: 280px; flex: 1; }
+        .task-column h3 { font-size: 1.1em; margin-bottom: 15px; color: #cbd5e1; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;}
+        .task-card { background-color: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 6px; padding: 12px; margin-bottom: 10px; cursor: grab; }
+        .task-card:active { cursor: grabbing; background-color: rgba(255, 255, 255, 0.12); }
+        .task-card p { margin-bottom: 8px; font-size: 15px; color: #e2e8f0; }
+        .task-card .due-date { font-size: 0.8em; color: #94a3b8; }
+        .task-card .actions button { font-size: 0.8em; padding: 4px 8px; margin-top: 8px; margin-right: 5px; width: auto; opacity: 0.8;}
+        .task-card .actions button:hover { opacity: 1;}
+        .status-new { border-left: 4px solid #3b82f6; /* Blue */ }
+        .status-inprogress { border-left: 4px solid #f59e0b; /* Amber */ }
+        .status-done { border-left: 4px solid #10b981; /* Green */ }
+
+    </style>
+</head>
+<body>
+
+    <div id="authContainer" class="container">
+        <!-- Kirish/Ro'yxatdan o'tish formasi avvalgidek -->
+        <h1 id="authTitle">Kirish</h1>
+        <form id="loginForm">
+            <div class="form-group"><label for="loginEmail">Email</label><input type="text" id="loginEmail" placeholder="test@example.com"></div>
+            <div class="form-group"><label for="loginPassword">Parol</label><input type="text" id="loginPassword" placeholder="******"></div>
+            <button type="button" id="loginButton">Kirish</button>
+            <div class="auth-switch">Akkauntingiz yo'qmi? <a id="showRegister">Ro'yxatdan o'tish</a></div>
+        </form>
+        <form id="registerForm">
+            <div class="form-group"><label for="registerName">Ism</label><input type="text" id="registerName" placeholder="Ali Valiyev"></div>
+            <div class="form-group"><label for="registerEmail">Email</label><input type="text" id="registerEmail" placeholder="siz@example.com"></div>
+            <div class="form-group"><label for="registerPassword">Parol</label><input type="text" id="registerPassword" placeholder="******"></div>
+            <button type="button" id="registerButton">Ro'yxatdan o'tish</button>
+            <div class="auth-switch">Akkauntingiz bormi? <a id="showLogin">Kirish</a></div>
+        </form>
+    </div>
+
+    <div id="appContainer" class="container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+             <h1><span class="gradient-text">InfiniteX</span> Biznes Jarayonlari</h1>
+             <button id="logoutButton" style="width: auto; background: #ef4444; padding: 8px 15px; font-size: 14px;">Chiqish</button>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-button active" data-tab="dashboard">Dashboard</button>
+            <button class="tab-button" data-tab="sales">Sotuvlar</button>
+            <button class="tab-button" data-tab="expenses">Xarajatlar</button>
+            <button class="tab-button" data-tab="customers">Mijozlar</button>
+            <button class="tab-button" data-tab="tasks">Topshiriqlar</button> <!-- YANGI TAB -->
+        </div>
+
+        <!-- Boshqa tab kontentlari avvalgidek -->
+        <div id="dashboardTab" class="tab-content active"> /* ... avvalgi dashboard kontenti ... */ </div>
+        <div id="salesTab" class="tab-content"> /* ... avvalgi sotuvlar kontenti ... */ </div>
+        <div id="expensesTab" class="tab-content"> /* ... avvalgi xarajatlar kontenti ... */ </div>
+        <div id="customersTab" class="tab-content"> /* ... avvalgi mijozlar kontenti ... */ </div>
+
+        <!-- YANGI TOPSHIRIQLAR MODULI KONTENTI -->
+        <div id="tasksTab" class="tab-content">
+            <h2>Topshiriqlar Boshqaruvi</h2>
+            <div class="container" style="margin-bottom: 30px;">
+                <h3>Yangi Topshiriq Qo'shish</h3>
+                <form id="addTaskForm">
+                    <div class="form-group">
+                        <label for="taskName">Topshiriq Nomi/Tavsifi</label>
+                        <textarea id="taskName" required placeholder="Masalan, Investorlar uchun taqdimotni tayyorlash"></textarea>
+                    </div>
+                    <div class="grid-container">
+                        <div class="form-group">
+                            <label for="taskDueDate">Bajarish Muddati</label>
+                            <input type="date" id="taskDueDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="taskStatus">Status</label>
+                            <select id="taskStatus">
+                                <option value="new">Yangi</option>
+                                <option value="inprogress">Bajarilmoqda</option>
+                                <option value="done">Bajarildi</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- <div class="form-group">
+                        <label for="taskAssignee">Mas'ul Shaxs (Ixtiyoriy)</label>
+                        <input type="text" id="taskAssignee" placeholder="Masalan, Farruxbek">
+                    </div> -->
+                    <button type="submit">Topshiriqni Qo'shish</button>
+                </form>
+            </div>
+
+            <div class="tasks-board">
+                <div class="task-column" id="newTasksColumn">
+                    <h3>Yangi</h3>
+                    <div class="tasks-list" data-status="new"></div>
+                </div>
+                <div class="task-column" id="inprogressTasksColumn">
+                    <h3>Bajarilmoqda</h3>
+                    <div class="tasks-list" data-status="inprogress"></div>
+                </div>
+                <div class="task-column" id="doneTasksColumn">
+                    <h3>Bajarildi</h3>
+                    <div class="tasks-list" data-status="done"></div>
+                </div>
+            </div>
+        </div>
+        <!-- /YANGI TOPSHIRIQLAR MODULI KONTENTI -->
+    </div>
+
+    <script>
+        // --- Simple In-Memory Data Store (NO DATABASE!) ---
+        let salesData = [];
+        let expensesData = [];
+        let customersData = [];
+        let tasksData = []; // YANGI
+        let loggedIn = false;
+
+        // DOM Elementlari va funksiyalar avvalgidek, yangi elementlar uchun havolalar qo'shiladi.
+        // Avvalgi JavaScript kodini shu yerga nusxalang va quyidagi o'zgartirishlarni kiriting.
+
+        // --- DOM Element References (Auth, Tabs, Sales, Expenses, Customers, Dashboard) ---
+        // ... avvalgi barcha DOM havolalari ...
+
+        // --- DOM Element References (App - Tasks) --- YANGI
+        const addTaskForm = document.getElementById('addTaskForm');
+        const taskNameInput = document.getElementById('taskName');
+        const taskDueDateInput = document.getElementById('taskDueDate');
+        const taskStatusSelect = document.getElementById('taskStatus');
+        // const taskAssigneeInput = document.getElementById('taskAssignee'); // Agar mas'ul shaxs bo'lsa
+
+        const newTasksListDiv = document.querySelector('#newTasksColumn .tasks-list');
+        const inprogressTasksListDiv = document.querySelector('#inprogressTasksColumn .tasks-list');
+        const doneTasksListDiv = document.querySelector('#doneTasksColumn .tasks-list');
+
+
+        // --- Functions (Auth, Tabs, Helpers, Customers, Sales, Expenses, Dashboard) ---
+        // ... avvalgi barcha funksiyalar ...
+        // `setDefaultDates()` funksiyasiga `taskDueDateInput.value = today;` ni qo'shing.
+        // Masalan:
+        function setDefaultDates() {
+            const today = new Date().toISOString().split('T')[0];
+            if (saleDateInput) saleDateInput.value = today;
+            if (expenseDateInput) expenseDateInput.value = today;
+            if (taskDueDateInput) taskDueDateInput.value = today; // YANGI
+        }
+
+
+        // --- Functions (Tasks) --- YANGI
+        function renderTasks() {
+            if (!loggedIn) return;
+
+            newTasksListDiv.innerHTML = '';
+            inprogressTasksListDiv.innerHTML = '';
+            doneTasksListDiv.innerHTML = '';
+
+            if (tasksData.length === 0) {
+                newTasksListDiv.innerHTML = '<p style="font-size:14px; color:#94a3b8;">Topshiriqlar yo\'q.</p>';
+                return;
+            }
+
+            tasksData.slice().reverse().forEach(task => {
+                const taskCard = document.createElement('div');
+                taskCard.classList.add('task-card', `status-${task.status}`);
+                taskCard.setAttribute('draggable', true); // Drag and drop uchun
+                taskCard.dataset.taskId = task.id;
+
+                taskCard.innerHTML = `
+                    <p>${task.name}</p>
+                    <div class="due-date">Muddati: ${task.dueDate}</div>
+                    <!-- <div class="assignee">Mas'ul: ${task.assignee || 'Noma\'lum'}</div> -->
+                    <div class="actions">
+                        ${task.status !== 'new' ? `<button class="change-status-btn" data-new-status="new" data-task-id="${task.id}">Yangi</button>` : ''}
+                        ${task.status !== 'inprogress' ? `<button class="change-status-btn" data-new-status="inprogress" data-task-id="${task.id}">Bajarilmoqda</button>` : ''}
+                        ${task.status !== 'done' ? `<button class="change-status-btn" data-new-status="done" data-task-id="${task.id}">Bajarildi</button>` : ''}
+                    </div>
+                `;
+
+                if (task.status === 'new') {
+                    newTasksListDiv.appendChild(taskCard);
+                } else if (task.status === 'inprogress') {
+                    inprogressTasksListDiv.appendChild(taskCard);
+                } else if (task.status === 'done') {
+                    doneTasksListDiv.appendChild(taskCard);
+                }
+            });
+
+            // Status o'zgartirish tugmalariga event listener qo'shish
+            document.querySelectorAll('.change-status-btn').forEach(button => {
+                button.addEventListener('click', handleChangeTaskStatus);
+            });
+        }
+
+        function handleAddTask(e) {
+            e.preventDefault();
+            if (!loggedIn) { alert("Iltimos, avval tizimga kiring."); return; }
+
+            const name = taskNameInput.value.trim();
+            const dueDate = taskDueDateInput.value;
+            const status = taskStatusSelect.value;
+            // const assignee = taskAssigneeInput.value.trim();
+
+            if (!name || !dueDate) {
+                alert("Topshiriq nomi va muddatini kiriting.");
+                return;
+            }
+
+            tasksData.push({
+                id: Date.now(),
+                name,
+                dueDate,
+                status,
+                // assignee
+            });
+
+            renderTasks();
+            addTaskForm.reset();
+            setDefaultDates(); // Sana maydonini qayta o'rnatish
+        }
+
+        function handleChangeTaskStatus(event) {
+            const taskId = parseInt(event.target.dataset.taskId);
+            const newStatus = event.target.dataset.newStatus;
+
+            const taskIndex = tasksData.findIndex(task => task.id === taskId);
+            if (taskIndex > -1) {
+                tasksData[taskIndex].status = newStatus;
+                renderTasks();
+            }
+        }
+
+        // `renderAll()` funksiyasiga qo'shish
+        function renderAll() {
+            if (!loggedIn) return;
+            renderCustomers();
+            renderSales();
+            renderExpenses();
+            renderDashboard();
+            renderTasks(); // YANGI
+        }
+
+        // --- Event Listeners ---
+        // ... avvalgi event listenerlar ...
+        addTaskForm.addEventListener('submit', handleAddTask); // YANGI
+
+        // --- Initial Setup ---
+        // ... avvalgi sozlamalar ...
+        // setDefaultDates(); // Bu handleLogin ichida chaqiriladi
+
+        handleLogout(); // Dasturni "chiqilgan" holatda boshlash
+        document.querySelector('.tab-button[data-tab="dashboard"]').click(); // Dashboard tabini birinchi ko'rsatish
+
+    </script>
+</body>
+</html>

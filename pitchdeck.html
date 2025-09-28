@@ -1,0 +1,1583 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InfiniteX - Pitch Deck</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body,
+        html {
+            height: 100%;
+            overflow: hidden;
+            background-color: #0f172a;
+        }
+
+        .slider-container {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.8s ease, transform 0.8s ease;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #0f172a;
+            color: white;
+            transform: scale(0.9);
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: scale(1);
+            z-index: 1;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .nav-btn {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn.active {
+            background-color: #06b6d4;
+            transform: scale(1.2);
+        }
+
+        .arrow {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+
+        .arrow:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .arrow.prev {
+            left: 20px;
+        }
+
+        .arrow.next {
+            right: 20px;
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #06b6d4, #2563eb);
+            z-index: 100;
+            transition: width 0.3s ease;
+        }
+
+        .content-container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-weight: 700;
+        }
+
+        .badge {
+            background: linear-gradient(90deg, #06b6d4, #2563eb);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            background-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, #06b6d4, #2563eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .feature-card {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            height: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            background-color: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+        .team-card {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .team-card:hover {
+            transform: translateY(-5px);
+            background-color: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border-color: rgba(6, 182, 212, 0.3);
+        }
+
+        .avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            margin: 0 auto 16px;
+            overflow: hidden;
+            border: 3px solid rgba(6, 182, 212, 0.3);
+        }
+
+        .progress-circle {
+            position: relative;
+            width: 120px;
+            height: 120px;
+        }
+
+        .progress-circle svg {
+            transform: rotate(-90deg);
+        }
+
+        .progress-circle circle {
+            fill: transparent;
+            stroke-width: 8;
+            stroke-linecap: round;
+        }
+
+        .progress-circle .bg {
+            stroke: rgba(255, 255, 255, 0.1);
+        }
+
+        .progress-circle .fg {
+            stroke: url(#gradient);
+        }
+
+        .price-card {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 32px 24px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            height: 100%;
+        }
+
+        .price-card.highlight {
+            background-color: rgba(6, 182, 212, 0.05);
+            border-color: rgba(6, 182, 212, 0.3);
+        }
+
+        .price-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 30px;
+            margin-bottom: 40px;
+        }
+
+        .timeline-item:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to bottom, #06b6d4, #2563eb);
+        }
+
+        .timeline-item:after {
+            content: '';
+            position: absolute;
+            left: -6px;
+            top: 0;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: linear-gradient(90deg, #06b6d4, #2563eb);
+        }
+
+        .screen {
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 0 15px rgba(6, 182, 212, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(6, 182, 212, 0);
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slider-container" id="slider">
+        <!-- Slide 1: Title -->
+        <div class="slide active">
+            <div class="content-container">
+                <div class="text-center">
+                    <div class="badge">InfiniteX</div>
+                    <h1 class="text-6xl font-bold mb-6">Infinite <span class="gradient-text">ERP</span></h1>
+                    <p class="text-xl text-gray-300 mb-10 max-w-2xl mx-auto">Kichik va O'rta biznesni raqamli
+                        transformatsiya orqali qo'llab-quvvatlash platformasi</p>
+
+                    <div class="grid grid-cols-4 gap-6 mt-12">
+                        <div class="stat-card">
+                            <h3 class="text-sm text-gray-400 mb-3">Sotuvlar o'sishi</h3>
+                            <p class="text-3xl font-bold text-cyan-400">+12.5%</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3 class="text-sm text-gray-400 mb-3">Mijozlar ko'payishi</h3>
+                            <p class="text-3xl font-bold text-blue-400">+4.7%</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3 class="text-sm text-gray-400 mb-3">Samaradorlik</h3>
+                            <p class="text-3xl font-bold text-indigo-400">+8.2%</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3 class="text-sm text-gray-400 mb-3">Xarajatlar tejami</h3>
+                            <p class="text-3xl font-bold text-purple-400">-15.3%</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Problem -->
+        <div class="slide">
+            <div class="content-container">
+                <div class="badge">Muammo</div>
+                <h2 class="text-4xl font-bold mb-8">Kichik va O'rta biznes uchun <span
+                        class="gradient-text">qiyinchiliklar</span></h2>
+
+                <div class="grid grid-cols-2 gap-8">
+                    <div class="screen">
+                        <img src="/api/placeholder/600/400" alt="Current Business Challenges" class="w-full h-auto">
+                    </div>
+                    <div>
+                        <div class="space-y-6">
+                            <div class="stat-card">
+                                <div class="flex items-start">
+                                    <div class="mr-4 text-rose-500">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-xl font-semibold mb-2">Eskirgan boshqaruv tizimlari</h3>
+                                        <p class="text-gray-400">Ko'p KO'Blar hali ham qog'oz yoki oddiy elektron
+                                            jadvallar bilan ishlaydi, bu esa samaradorlikni pasaytiradi.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="stat-card">
+                                <div class="flex items-start">
+                                    <div class="mr-4 text-amber-500">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-xl font-semibold mb-2">Ma'lumotlarning tarqoqligi</h3>
+                                        <p class="text-gray-400">Biznes ma'lumotlari turli tizimlarda va hujjatlarda
+                                            saqlanadi, qaror qabul qilishni qiyinlashtiradi.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="stat-card">
+                                <div class="flex items-start">
+                                    <div class="mr-4 text-blue-500">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-xl font-semibold mb-2">Moliyaviy nazorat muammolari</h3>
+                                        <p class="text-gray-400">KO'B egalariga real vaqtda moliyaviy ko'rsatkichlarni
+                                            kuzatish va tahlil qilish imkoniyatlari yetishmaydi.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Slide 3: Solution -->
+        <div class="slide">
+            <div class="content-container">
+                <div class="badge">Yechim</div>
+                <h2 class="text-4xl font-bold mb-8"><span class="gradient-text">Infinite ERP</span> - Keng qamrovli
+                    platforma</h2>
+
+                <div class="grid grid-cols-3 gap-6">
+                    <div class="feature-card">
+                        <div class="feature-icon bg-cyan-900">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-cyan-400" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">Sotuvlar Boshqaruvi</h3>
+                        <p class="text-gray-400">Sotuv statistikasi, buyurtmalar, mijozlar va sotuvlar dinamikasini
+                            kuzatish</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon bg-blue-900">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-400" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">Mijozlar Boshqaruvi</h3>
+                        <p class="text-gray-400">Mijozlar ma'lumotlari, munosabatlar, sotuv tarixini yagona tizimda
+                            saqlash</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon bg-purple-900">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-purple-400" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">Marketing Analitikasi</h3>
+                        <p class="text-gray-400">Kanallar samaradorligi, kampaniyalar natijalarini kuzatish va tahlil
+                            qilish</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon bg-red-900">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-red-400" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">Topshiriqlar Boshqaruvi</h3>
+                        <p class="text-gray-400">Jamoaviy vazifalar, loyihalar va sprint boshqaruvi uchun Agile kanban
+                            tizimi</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon bg-amber-900">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-amber-400" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">Moliya va Buxgalteriya</h3>
+                        <p class="text-gray-400">Daromadlar, xarajatlar, foyda tahlili va moliyaviy prognozlash
+                            imkoniyatlari</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon bg-indigo-900">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-400" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">Integratsiya Imkoniyatlari</h3>
+                        <p class="text-gray-400">Mavjud tizimlar, to'lov xizmatlari va buxgalteriya dasturlari bilan
+                            integratsiya</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Dashboard Overview -->
+        <div class="slide">
+            <div class="content-container">
+                <div class="badge">Mahsulot ko'rinishi</div>
+                <h2 class="text-4xl font-bold mb-8">Asosiy <span class="gradient-text">Dashboard</span></h2>
+
+                <div class="grid grid-cols-2 gap-8">
+                    <div>
+                        <div class="stat-card mb-6">
+                            <h3 class="text-xl font-semibold mb-4">Biznes ko'rsatkichlarini real vaqtda kuzatish</h3>
+                            <p class="text-gray-400 mb-4">Biznesning muhim ko'rsatkichlarini bir joyda ko'rish va tahlil
+                                qilish imkoniyati</p>
+                            <div class="flex items-center">
+                                <div class="w-2 h-2 bg-cyan-400 rounded-full mr-2 pulse"></div>
+                                <p class="text-cyan-400 text-sm">Real vaqt ma'lumotlari</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="stat-card text-center">
+                                <h3 class="text-sm text-gray-400 mb-2">Umumiy sotuv</h3>
+                                <p class="text-2xl font-bold text-cyan-400">120.4M</p>
+                                <p class="text-xs text-green-400">+12.5% o'sish</p>
+                            </div>
+                            <div class="stat-card text-center">
+                                <h3 class="text-sm text-gray-400 mb-2">Mijozlar</h3>
+                                <p class="text-2xl font-bold text-blue-400">3,240</p>
+                                <p class="text-xs text-green-400">+4.7% o'sish</p>
+                            </div>
+                            <div class="stat-card text-center">
+                                <h3 class="text-sm text-gray-400 mb-2">Buyurtmalar</h3>
+                                <p class="text-2xl font-bold text-purple-400">684</p>
+                                <p class="text-xs text-red-400">-2.3% kamayish</p>
+                            </div>
+                            <div class="stat-card text-center">
+                                <h3 class="text-sm text-gray-400 mb-2">Vazifalar</h3>
+                                <p class="text-2xl font-bold text-green-400">42</p>
+                                <p class="text-xs text-green-400">+8.2% o'sish</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="screen">
+                        <img src="/api/placeholder/600/400" alt="Dashboard Screen" class="w-full h-auto">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Task Management -->
+        <div class="slide">
+            <div class="content-container">
+                <div class="badge">Topshiriqlar boshqaruvi</div>
+                <h2 class="text-4xl font-bold mb-8"><span class="gradient-text">Agile</span> kanban tizimi</h2>
+
+                <div class="grid grid-cols-2 gap-8">
+                    <div class="screen">
+                        <img src="/api/placeholder/600/400" alt="Task Management Screen" class="w-full h-auto">
+                    </div>
+
+                    <div>
+                        <div class="stat-card mb-6">
+                            <h3 class="text-xl font-semibold mb-4">Jamoaviy vazifalarni samarali boshqarish</h3>
+                            <p class="text-gray-400 mb-4">Loyihalar, sprintlar va vazifalarni yagona joyda kuzatish va
+                                boshqarish</p>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="stat-card">
+                                <div class="flex items-start">
+                                    <div class="mr-3 text-green-400">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M5 13l4 4L19 7" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold mb-1">Sprint #12</h3>
+                                        <p class="text-gray-400 text-sm">9 kun qoldi</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="stat-card">
+                                <div class="flex items-start">
+                                    <div class="mr-3 text-green-400">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M5 13l4 4L19 7" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold mb-1">24 vazifa</h3>
+                                        <p class="text-gray-400 text-sm">Bajarilgan</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="stat-card">
+                                <div class="flex items-start">
+                                    <div class="mr-3 text-blue-400">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold mb-1">42 vazifa</h3>
+                                        <p class="text-gray-400 text-sm">Jarayonda</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="stat-card">
+                                <div class="flex items-start">
+                                    <div class="mr-3 text-purple-400">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold mb-1">38 point/sprint</h3>
+                                        <p class="text-gray-400 text-sm">O'rtacha ko'rsatkich</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Financial Management -->
+        <div class="slide">
+            <div class="content-container">
+                <div class="badge">Moliyaviy boshqaruv</div>
+                <h2 class="text-4xl font-bold mb-8">Biznes <span class="gradient-text">moliyasini</span> nazorat qilish
+                </h2>
+
+                <div class="grid grid-cols-2 gap-8">
+                    <div>
+                        <div class="stat-card mb-6">
+                            <h3 class="text-xl font-semibold mb-4">Daromad va xarajatlarni tahlil qilish</h3>
+                            <p class="text-gray-400 mb-4">Moliyaviy ko'rsatkichlarni kuzatish, tahlil qilish va
+                                prognozlash</p>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div class="flex justify-center">
+                                <div class="progress-circle">
+                                    <svg width="120" height="120" viewBox="0 0 120 120">
+                                        <defs>
+                                            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                                <stop offset="0%" stop-color="#06b6d4" />
+                                                <stop offset="100%" stop-color="#2563eb" />
+                                            </linearGradient>
+                                        </defs>
+                                        <circle class="bg" cx="60" cy="60" r="54" />
+                                        <circle class="fg" cx="60" cy="60" r="54" stroke-dasharray="339.29"
+                                            stroke-dashoffset="84.82" />
+                                    </svg>
+                                    <div class="absolute inset-0 flex flex-col items-center justify-center">
+                                        <span class="text-2xl font-bold">75%</span>
+                                        <span class="text-xs text-gray-400">Daromad</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex justify-center">
+                                <div class="progress-circle">
+                                    <svg width="120" height="120" viewBox="0 0 120 120">
+                                        <circle class="bg" cx="60" cy="60" r="54" />
+                                        <circle class="fg" cx="60" cy="60" r="54" stroke-dasharray="339.29"
+                                            stroke-dashoffset="135.72" />
+                                    </svg>
+                                    <div class="absolute inset-0 flex flex-col items-center justify-center">
+                                        <span class="text-2xl font-bold">60%</span>
+                                        <span class="text-xs text-gray-400">Xarajat</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="flex justify-between items-center mb-3">
+                                <h3 class="text-base font-semibold">Umumiy daromad</h3>
+                                <p class="text-cyan-400">12,480,500,000 so'm</p>
+                            </div>
+                            <div class="w-full bg-gray-700 rounded-full h-2 mb-4">
+                                <div class="bg-gradient-to-r from-cyan-400 to-blue-500 h-2 rounded-full"
+                                    style="width: 75%"></div>
+                            </div>
+
+                            <div class="flex justify-between items-center mb-3">
+                                <h3 class="text-base font-semibold">Umumiy xarajatlar</h3>
+                                <p class="text-blue-400">8,240,000,000 so'm</p>
+                            </div>
+                            <div class="w-full bg-gray-700 rounded-full h-2 mb-4">
+                                <div class="bg-gradient-to-r from-blue-400 to-indigo-500 h-2 rounded-full"
+                                    style="width: 60%"></div>
+                            </div>
+
+                            <div class="flex justify-between items-center mb-3">
+                                <h3 class="text-base font-semibold">Sof foyda</h3>
+                                <p class="text-indigo-400">4,240,500,000 so'm</p>
+                            </div>
+                            <div class="w-full bg-gray-700 rounded-full h-2">
+                                <div class="bg-gradient-to-r from-indigo-400 to-purple-500 h-2 rounded-full"
+                                    style="width: 35%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="screen">
+                        <img src="/api/placeholder/600/400" alt="Financial Management Screen" class="w-full h-auto">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Marketing Analytics -->
+        <div class="slide">
+            <div class="content-container">
+                <div class="badge">Marketing</div>
+                <h2 class="text-4xl font-bold mb-8">Marketing <span class="gradient-text">analitikasi</span> va
+                    kampaniyalar</h2>
+
+                <div class="grid grid-cols-2 gap-8">
+                    <div class="screen">
+                        <img src="/api/placeholder/600/400" alt="Marketing Analytics Screen" class="w-full h-auto">
+                    </div>
+
+                    <div>
+                        <div class="stat-card mb-6">
+                            <h3 class="text-xl font-semibold mb-4">Marketing kanallarining samaradorligi</h3>
+                            <p class="text-gray-400 mb-4">Kampaniyalar va kanallar samaradorligini tahlil qilish
+                                imkoniyati</p>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="stat-card">
+                                <div class="flex justify-between items-center mb-2">
+                                    <div class="flex items-center">
+                                        <div class="text-blue-400 mr-3">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                                                viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                                            </svg>
+                                        </div>
+                                        <h3 class="font-semibold">Ijtimoiy media</h3>
+                                    </div>
+                                    <p class="text-xl font-bold text-cyan-400">36.5%</p>
+                                </div>
+                                <div class="w-full bg-gray-700 rounded-full h-2">
+                                    <div class="bg-gradient-to-r from-cyan-400 to-blue-500 h-2 rounded-full"
+                                        style="width: 36.5%"></div>
+                                </div>
+                            </div>
+
+                            <div class="stat-card">
+                                <div class="flex justify-between items-center mb-2">
+                                    <div class="flex items-center">
+                                        <div class="text-green-400 mr-3">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                                                viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                            </svg>
+                                        </div>
+                                        <h3 class="font-semibold">Elektron pochta</h3>
+                                    </div>
+                                    <p class="text-xl font-bold text-blue-400">24.8%</p>
+                                </div>
+                                <div class="w-full bg-gray-700 rounded-full h-2">
+                                    <div class="bg-gradient-to-r from-blue-400 to-indigo-500 h-2 rounded-full"
+                                        style="width: 24.8%"></div>
+                                </div>
+                            </div>
+
+                            <div class="stat-card">
+                                <div class="flex justify-between items-center mb-2">
+                                    <div class="flex items-center">
+                                        <div class="text-purple-400 mr-3">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                                                viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                                            </svg>
+                                        </div>
+                                        <h3 class="font-semibold">Kontekst reklama</h3>
+                                    </div>
+                                    <p class="text-xl font-bold text-indigo-400">28.7%</p>
+                                </div>
+                                <div class="w-full bg-gray-700 rounded-full h-2">
+                                    <div class="bg-gradient-to-r from-indigo-400 to-purple-500 h-2 rounded-full"
+                                        style="width: 28.7%"></div>
+                                </div>
+                            </div>
+
+                            <div class="stat-card">
+                                <div class="flex justify-between items-center mb-2">
+                                    <div class="flex items-center">
+                                        <div class="text-amber-400 mr-3">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                                                viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                            </svg>
+                                        </div>
+                                        <h3 class="font-semibold">SEO/SEM</h3>
+                                    </div>
+                                    <p class="text-xl font-bold text-amber-400">10.0%</p>
+                                </div>
+                                <div class="w-full bg-gray-700 rounded-full h-2">
+                                    <div class="bg-gradient-to-r from-amber-400 to-orange-500 h-2 rounded-full"
+                                        style="width: 10%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Competitive Advantages -->
+        <div class="slide">
+            <div class="content-container">
+                <div class="badge">Afzalliklar</div>
+                <h2 class="text-4xl font-bold mb-10">Bizning <span class="gradient-text">ustunliklarimiz</span></h2>
+
+                <div class="grid grid-cols-2 gap-8">
+                    <div class="space-y-6">
+                        <div class="stat-card">
+                            <div class="flex items-start">
+                                <div class="mr-4 text-cyan-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-semibold mb-2">Yagona integratsiyalangan platforma</h3>
+                                    <p class="text-gray-400">Barcha biznes jarayonlarini yagona tizimda birlashtirish
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="flex items-start">
+                                <div class="mr-4 text-green-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-semibold mb-2">Qulay va intuitiv interfeys</h3>
+                                    <p class="text-gray-400">Minimal o'rganish vaqti bilan osongina boshlash imkoniyati
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="flex items-start">
+                                <div class="mr-4 text-amber-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-semibold mb-2">Mahalliy til va xususiyatlar</h3>
+                                    <p class="text-gray-400">O'zbek tilidagi interfeys va mahalliy biznes jarayonlariga
+                                        moslashuvchanlik</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <div class="stat-card">
+                            <div class="flex items-start">
+                                <div class="mr-4 text-blue-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-semibold mb-2">Hamyonbop narxlash</h3>
+                                    <p class="text-gray-400">KO'B uchun mo'ljallangan narxlash siyosati, xalqaro
+                                        tizimlarga nisbatan arzonroq</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="flex items-start">
+                                <div class="mr-4 text-purple-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-semibold mb-2">Bulutli yechim</h3>
+                                    <p class="text-gray-400">Qurilmadan qat'i nazar istalgan joydan kirishga imkon
+                                        beruvchi bulutli arxitektura</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="flex items-start">
+                                <div class="mr-4 text-indigo-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-semibold mb-2">Mahalliy qo'llab-quvvatlash</h3>
+                                    <p class="text-gray-400">24/7 texnik yordam va mahalliy mutaxassislar bilan ishlash
+                                        imkoniyati</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Implementation Plan -->
+        <div class="slide">
+            <div class="content-container">
+                <div class="badge">Yo'l xaritasi</div>
+                <h2 class="text-4xl font-bold mb-8">Amalga oshirish <span class="gradient-text">strategiyasi</span></h2>
+
+                <div class="grid grid-cols-2 gap-8">
+                    <div class="space-y-6">
+                        <div class="timeline-item pl-10 pb-8">
+                            <h3 class="text-xl font-semibold mb-3">MVP Moduli <span class="text-cyan-400">(3 oy)</span>
+                            </h3>
+                            <p class="text-gray-400">Asosiy modullar ishga tushiriladi: Dashboard, Sotuvlar, Mijozlar
+                                boshqaruvi va oddiy moliyaviy
+                                hisobotlar</p>
+                        </div>
+
+                        <div class="timeline-item pl-10 pb-8">
+                            <h3 class="text-xl font-semibold mb-3">Kengaytirilgan Funktsionallik <span
+                                    class="text-blue-400">(6 oy)</span></h3>
+                            <p class="text-gray-400">Marketing analitikasi, topshiriqlar boshqaruvi va kengaytirilgan
+                                moliyaviy tahlil
+                                modullarini qo'shish</p>
+                        </div>
+
+                        <div class="timeline-item pl-10 pb-8">
+                            <h3 class="text-xl font-semibold mb-3">Integratsiya va API <span class="text-purple-400">(9
+                                    oy)</span></h3>
+                            <p class="text-gray-400">To'lov tizimlari, buxgalteriya dasturlari va davlat xizmatlari
+                                bilan integratsiya, hamda
+                                API yaratish</p>
+                        </div>
+
+                        <div class="timeline-item pl-10">
+                            <h3 class="text-xl font-semibold mb-3">AI va Big Data <span class="text-indigo-400">(12+
+                                    oy)</span></h3>
+                            <p class="text-gray-400">Prognozlash, biznes intellekti va avtomatlashtirish uchun sun'iy
+                                intellekt vositalarini
+                                qo'shish</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <div class="stat-card">
+                            <h3 class="text-xl font-semibold mb-4">Maqsadli ko'rsatkichlar</h3>
+
+                            <div class="mb-4">
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-sm">Birinchi 3 oyda mijozlar</span>
+                                    <span class="text-sm text-cyan-400">100+</span>
+                                </div>
+                                <div class="w-full bg-gray-700 rounded-full h-2">
+                                    <div class="bg-gradient-to-r from-cyan-400 to-blue-500 h-2 rounded-full"
+                                        style="width: 20%"></div>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-sm">6 oyda mijozlar</span>
+                                    <span class="text-sm text-blue-400">250+</span>
+                                </div>
+                                <div class="w-full bg-gray-700 rounded-full h-2">
+                                    <div class="bg-gradient-to-r from-blue-400 to-indigo-500 h-2 rounded-full"
+                                        style="width: 50%"></div>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-sm">12 oyda mijozlar</span>
+                                    <span class="text-sm text-purple-400">500+</span>
+                                </div>
+                                <div class="w-full bg-gray-700 rounded-full h-2">
+                                    <div class="bg-gradient-to-r from-indigo-400 to-purple-500 h-2 rounded-full"
+                                        style="width: 80%"></div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-sm">24 oyda mijozlar</span>
+                                    <span class="text-sm text-indigo-400">1,200+</span>
+                                </div>
+                                <div class="w-full bg-gray-700 rounded-full h-2">
+                                    <div class="bg-gradient-to-r from-purple-400 to-pink-500 h-2 rounded-full"
+                                        style="width: 100%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <h3 class="text-xl font-semibold mb-4">Investitsiya rejasi</h3>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="text-center">
+                                    <p class="text-sm text-gray-400 mb-1">Dastlabki investitsiya</p>
+                                    <p class="text-2xl font-bold text-cyan-400">500 mln</p>
+                                    <p class="text-xs text-gray-500">so'm</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-sm text-gray-400 mb-1">Yillik daromad (3-yil)</p>
+                                    <p class="text-2xl font-bold text-blue-400">6 mlrd</p>
+                                    <p class="text-xs text-gray-500">so'm</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Team -->
+        <div class="slide">
+            <div class="content-container">
+                <div class="badge">Jamoa</div>
+                <h2 class="text-4xl font-bold mb-10"><span class="gradient-text">InfiniteX</span> jamoasi</h2>
+
+                <div class="grid grid-cols-3 gap-6">
+                    <div class="team-card">
+                        <div class="avatar">
+                            <img src="/api/placeholder/100/100" alt="Team Member" class="w-full h-full object-cover">
+                        </div>
+                        <h3 class="text-xl font-semibold mb-1">Farruxbek Abdullayev</h3>
+                        <p class="text-cyan-400 mb-3">Team Lead, Full Stack Developer</p>
+                        <p class="text-gray-400 text-sm">+998995544660</p>
+                    </div>
+
+                    <div class="team-card">
+                        <div class="avatar">
+                            <img src="/api/placeholder/100/100" alt="Team Member" class="w-full h-full object-cover">
+                        </div>
+                        <h3 class="text-xl font-semibold mb-1">Jabbarova Gulsevar</h3>
+                        <p class="text-cyan-400 mb-3">UI/UX Designer</p>
+                    </div>
+
+                    <div class="team-card">
+                        <div class="avatar">
+                            <img src="/api/placeholder/100/100" alt="Team Member" class="w-full h-full object-cover">
+                        </div>
+                        <h3 class="text-xl font-semibold mb-1">Bo'riboyeva Sabrina</h3>
+                        <p class="text-cyan-400 mb-3">Business Analyst</p>
+                    </div>
+
+                    <div class="team-card">
+                        <div class="avatar">
+                            <img src="/api/placeholder/100/100" alt="Team Member" class="w-full h-full object-cover">
+                        </div>
+                        <h3 class="text-xl font-semibold mb-1">O'rolov Rustamjon</h3>
+                        <p class="text-cyan-400 mb-3">Back End Developer</p>
+                        <p class="text-gray-400 text-sm">+998881117741</p>
+                    </div>
+
+                    <div class="team-card">
+                        <div class="avatar">
+                            <img src="/api/placeholder/100/100" alt="Team Member" class="w-full h-full object-cover">
+                        </div>
+                        <h3 class="text-xl font-semibold mb-1">Oblokulov Mirjalol</h3>
+                        <p class="text-cyan-400 mb-3">Front End Developer</p>
+                        <p class="text-gray-400 text-sm">+998981550825</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Business Model -->
+        <div class="slide">
+            <div class="content-container">
+                <div class="badge">Biznes model</div>
+                <h2 class="text-4xl font-bold mb-10">Narxlash <span class="gradient-text">strategiyasi</span></h2>
+
+                <div class="grid grid-cols-3 gap-6">
+                    <div class="price-card">
+                        <div class="mb-6">
+                            <h3 class="text-2xl font-semibold">Starter</h3>
+                            <p class="text-gray-400 text-sm">Kichik bizneslar uchun</p>
+                        </div>
+
+                        <div class="mb-8">
+                            <p class="text-3xl font-bold text-white">200,000</p>
+                            <p class="text-gray-400 text-sm">so'm / oyiga</p>
+                        </div>
+
+                        <ul class="space-y-3 mb-8">
+                            <li class="flex items-center">
+                                <svg class="h-5 w-5 text-cyan-400 mr-2" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span class="text-gray-300">Dashboard</span>
+                            </li>
+                            <li class="flex items-center">
+                                <svg class="h-5 w-5 text-cyan-400 mr-2" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span class="text-gray-300">Sotuvlar boshqaruvi</span>
+                            </li>
+                            <li class="flex items-center">
+                                <svg class="h-5 w-5 text-cyan-400 mr-2" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span class="text-gray-300">3 foydalanuvchi</span>
+                            </li>
+                            <li class="flex items-center text-gray-500">
+                                <svg class="h-5 w-5 text-gray-600 mr-2" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                                <span>Marketing analitikasi</span>
+                            </li>
+                            <li class="flex items-center text-gray-500">
+                                <svg class="h-5 w-5 text-gray-600 mr-2" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                                <span>API integratsiya</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="price-card highlight">
+                        <div class="bg-cyan-600 text-white text-xs font-bold px-3 py-1 rounded-full inline-block mb-4">
+                            ENG
+                            OMMABOP</div>
+
+                        <div class="mb-6">
+                            <h3 class="text-2xl font-semibold">Professional</h3>
+                            <p class="text-gray-400 text-sm">O'rta bizneslar uchun</p>
+                        </div>
+
+                        <div class="mb-8">
+                            <p class="text-3xl font-bold text-white">500,000</p>
+                            <p class="text-gray-400 text-sm">so'm / oyiga</p>
+                        </div>
+
+                        <ul class="space-y-3 mb-8">
+                            <li class="flex items-center">
+                                <svg class="h-5 w-5 text-cyan-400 mr-2" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span class="text-gray-300">Barcha Starter imkoniyatlari</span>
+                            </li>
+                            <li class="flex items-center">
+                                <svg class="h-5 w-5 text-cyan-400 mr-2" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span class="text-gray-300">Marketing analitikasi</span>
+                            </li>
+                            <li class="flex items-center">
+                                <svg class="h-5 w-5 text-cyan-400 mr-2" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span class="text-gray-300">Topshiriqlar boshqaruvi</span>
+                            </li>
+                            <svg class="h-5 w-5 text-cyan-400 mr-2" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span class="text-gray-300">10 foydalanuvchi</span>
+                            </li>
+                            <li class="flex items-center text-gray-500">
+                                <svg class="h-5 w-5 text-gray-600 mr-2" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                                <span>AI prognozlash</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="price-card">
+                        <div class="mb-6">
+                            <h3 class="text-2xl font-semibold">Enterprise</h3>
+                            <p class="text-gray-400 text-sm">Yirik bizneslar uchun</p>
+                        </div>
+
+                        <div class="mb-8">
+                            <p class="text-3xl font-bold text-white">1,200,000</p>
+                            <p class="text-gray-400 text-sm">so'm / oyiga</p>
+                        </div>
+
+                        <ul class="space-y-3 mb-8">
+                            <li class="flex items-center">
+                                <svg class="h-5 w-5 text-cyan-400 mr-2" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span class="text-gray-300">Barcha Professional imkoniyatlari</span>
+                            </li>
+                            <li class="flex items-center">
+                                <svg class="h-5 w-5 text-cyan-400 mr-2" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span class="text-gray-300">Cheksiz foydalanuvchilar</span>
+                            </li>
+                            <li class="flex items-center">
+                                <svg class="h-5 w-5 text-cyan-400 mr-2" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span class="text-gray-300">API integratsiya</span>
+                            </li>
+                            <li class="flex items-center">
+                                <svg class="h-5 w-5 text-cyan-400 mr-2" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span class="text-gray-300">AI prognozlash</span>
+                            </li>
+                            <li class="flex items-center">
+                                <svg class="h-5 w-5 text-cyan-400 mr-2" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span class="text-gray-300">24/7 qo'llab-quvvatlash</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Market Analysis -->
+        <div class="slide">
+            <div class="content-container">
+                <div class="badge">Bozor</div>
+                <h2 class="text-4xl font-bold mb-8">Bozor <span class="gradient-text">tahlili</span></h2>
+
+                <div class="grid grid-cols-2 gap-8">
+                    <div class="space-y-6">
+                        <div class="stat-card">
+                            <h3 class="text-xl font-semibold mb-4">Bozor hajmi va imkoniyatlari</h3>
+
+                            <div class="mb-4">
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-gray-400">O'zbekistonda KO'B soni</span>
+                                    <span class="text-cyan-400">400,000+</span>
+                                </div>
+                                <div class="w-full bg-gray-700 rounded-full h-2">
+                                    <div class="bg-gradient-to-r from-cyan-400 to-blue-500 h-2 rounded-full"
+                                        style="width: 90%">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-gray-400">Raqamli transformatsiya o'sishi</span>
+                                    <span class="text-blue-400">+24% yillik</span>
+                                </div>
+                                <div class="w-full bg-gray-700 rounded-full h-2">
+                                    <div class="bg-gradient-to-r from-blue-400 to-indigo-500 h-2 rounded-full"
+                                        style="width: 75%"></div>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-gray-400">ERP bozorining o'sishi</span>
+                                    <span class="text-indigo-400">+18% yillik</span>
+                                </div>
+                                <div class="w-full bg-gray-700 rounded-full h-2">
+                                    <div class="bg-gradient-to-r from-indigo-400 to-purple-500 h-2 rounded-full"
+                                        style="width: 65%"></div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-gray-400">KO'B o'sishi</span>
+                                    <span class="text-purple-400">+12% yillik</span>
+                                </div>
+                                <div class="w-full bg-gray-700 rounded-full h-2">
+                                    <div class="bg-gradient-to-r from-purple-400 to-pink-500 h-2 rounded-full"
+                                        style="width: 55%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <div class="stat-card">
+                            <h3 class="text-xl font-semibold mb-4">Bizning ustunligimiz</h3>
+
+                            <ul class="space-y-4">
+                                <li class="flex items-start">
+                                    <svg class="h-6 w-6 text-cyan-400 mr-3 flex-shrink-0 mt-0.5" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5 13l4 4L19 7" />
+                                    </svg>
+                                    <div>
+                                        <h4 class="font-semibold">Mahalliy tizim</h4>
+                                        <p class="text-gray-400 text-sm">O'zbek tilidagi interfeys va mahalliy biznes
+                                            jarayonlariga moslashuvchanlik</p>
+                                    </div>
+                                </li>
+
+                                <li class="flex items-start">
+                                    <svg class="h-6 w-6 text-cyan-400 mr-3 flex-shrink-0 mt-0.5" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5 13l4 4L19 7" />
+                                    </svg>
+                                    <div>
+                                        <h4 class="font-semibold">Hamyonbop narx</h4>
+                                        <p class="text-gray-400 text-sm">KO'B uchun mo'ljallangan narxlash siyosati,
+                                            xalqaro
+                                            tizimlarga nisbatan arzonroq</p>
+                                    </div>
+                                </li>
+
+                                <li class="flex items-start">
+                                    <svg class="h-6 w-6 text-cyan-400 mr-3 flex-shrink-0 mt-0.5" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5 13l4 4L19 7" />
+                                    </svg>
+                                    <div>
+                                        <h4 class="font-semibold">Mahalliy qo'llab-quvvatlash</h4>
+                                        <p class="text-gray-400 text-sm">24/7 texnik yordam va mahalliy mutaxassislar
+                                            bilan
+                                            ishlash imkoniyati</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 13: Final -->
+        <div class="slide">
+            <div class="content-container text-center">
+                <div class="badge">InfiniteX</div>
+                <h2 class="text-5xl font-bold mb-6"><span class="gradient-text">Raqamli Biznes.</span> Cheksiz
+                    Imkoniyatlar.
+                </h2>
+                <p class="text-xl text-gray-300 mb-12 max-w-2xl mx-auto">Kichik va O'rta Biznesni Qo'llab-quvvatlash va
+                    rivojlantirishga Innovatsion yechim</p>
+
+                <div class="stat-card inline-block max-w-md mx-auto">
+                    <div class="flex items-center justify-center mb-6">
+                        <div
+                            class="h-16 w-16 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 flex items-center justify-center mr-6">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                        </div>
+                        <div class="text-left">
+                            <h3 class="text-2xl font-bold text-cyan-400">InfiniteX</h3>
+                            <p class="text-gray-400">Cheksiz imkoniyatlar, cheksiz yechimlar</p>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-center space-x-8">
+                        <a href="tel:+998995544660"
+                            class="flex items-center text-blue-400 hover:text-blue-300 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                            </svg>
+                            +998995544660
+                        </a>
+                        <a href="mailto:info@infinitex.uz"
+                            class="flex items-center text-blue-400 hover:text-blue-300 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                            info@infinitex.uz
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="arrow prev" id="prevBtn">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            th stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+    </div>
+
+    <div class="arrow next" id="nextBtn">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+    </div>
+
+    <div class="navigation" id="navigation"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const slider = document.getElementById('slider');
+            const slides = Array.from(slider.querySelectorAll('.slide'));
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const navigation = document.getElementById('navigation');
+            const progressBar = document.getElementById('progressBar');
+
+            let currentIndex = 0;
+
+            // Create navigation dots  
+            slides.forEach((_, index) => {
+                const dot = document.createElement('div');
+                dot.classList.add('nav-btn');
+                if (index === 0) {
+                    dot.classList.add('active');
+                }
+                dot.addEventListener('click', () => {
+                    goToSlide(index);
+                });
+                navigation.appendChild(dot);
+            });
+
+            const navBtns = Array.from(navigation.querySelectorAll('.nav-btn'));
+
+            // Update progress bar  
+            function updateProgressBar() {
+                const progress = ((currentIndex + 1) / slides.length) * 100;
+                progressBar.style.width = `${progress}%`;
+            }
+
+            // Show slide  
+            function showSlide(index) {
+                slides.forEach((slide, i) => {
+                    if (i === index) {
+                        slide.classList.add('active');
+                    } else {
+                        slide.classList.remove('active');
+                    }
+                });
+
+                navBtns.forEach((btn, i) => {
+                    if (i === index) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                });
+
+                updateProgressBar();
+            }
+
+            // Go to slide  
+            function goToSlide(index) {
+                currentIndex = index;
+                showSlide(currentIndex);
+            }
+
+            // Next slide  
+            function nextSlide() {
+                currentIndex = (currentIndex + 1) % slides.length;
+                showSlide(currentIndex);
+            }
+
+            // Previous slide  
+            function prevSlide() {
+                currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+                showSlide(currentIndex);
+            }
+
+            // Event listeners  
+            prevBtn.addEventListener('click', prevSlide);
+            nextBtn.addEventListener('click', nextSlide);
+
+            // Keyboard navigation  
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'ArrowRight') {
+                    nextSlide();
+                } else if (e.key === 'ArrowLeft') {
+                    prevSlide();
+                }
+            });
+
+            // Touch events for mobile swipe  
+            let touchStartX = 0;
+            let touchEndX = 0;
+
+            slider.addEventListener('touchstart', function (e) {
+                touchStartX = e.changedTouches[0].screenX;
+            });
+
+            slider.addEventListener('touchend', function (e) {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            });
+
+            function handleSwipe() {
+                const threshold = 100; // Minimum distance for swipe  
+
+                if (touchStartX - touchEndX > threshold) {
+                    // Swipe left  
+                    nextSlide();
+                } else if (touchEndX - touchStartX > threshold) {
+                    // Swipe right  
+                    prevSlide();
+                }
+            }
+
+            // Initialize  
+            updateProgressBar();
+        });  
+    </script>
+</body>
+
+</html>
